@@ -1,0 +1,110 @@
+VSOME IP :
+
+
+Download/clone the vsomeip code from the following github link
+
+
+     https://github.com/COVESA/vsomeip.git
+
+Download the tool chain for aarch64 architecture
+
+    https://github.com/NVIDIA/DALI 
+
+
+
+
+Install Necessary Packages
+
+1. Gtest / Google Test
+
+a. Download the SOURCE CODE from https://github.com/google/googletest/releases/tag/release-1.11.0
+
+b. Extract the files in any Location
+
+c. Go into the Extracted Folder -> Open in Terminal
+
+d. Use these Commands
+
+i. sudo apt-get update -y
+
+ii. mkdir build
+
+iii. cd build
+
+iv. cmake ..
+
+v. make
+
+vi. sudo make install
+
+e. Make
+
+f. sudo apt-get install build-essential
+Download the boost packages
+
+    Use these  commands 
+
+    sudo apt install libboost-dev 
+
+    sudo apt install libboost-all-dev 
+
+    Check the installation 
+
+    dpkg -s libboost-dev | grep version 
+
+Download and extract the library
+
+  https://www.boost.org/users/history/version_1_71_0.html
+  
+  and extract the zip 
+  
+inside the folder and in this path  boost_1_71_0/tools/build/src/tools/common.jam 
+     comment out the entire if loop
+     if $(tag) = gcc && [ numbers.less 4 $(version[1]) ]  line no. 977 to 980   
+     
+
+$ chmod 777 bootstrap.sh   // giving all permisions to .sh file
+
+$ sudo ./bootstrap.sh –prefix=/usr/local
+
+
+$ sudo ./b2 --prefix=/usr/local install toolset=gcc-arm  cxxflags=-fPIC --with-filesystem --with-test --with-log --with-program_options --with-system -j64 --user-config=user_config.jam --threading=multi
+
+Building someip:-
+
+vsomeip$ mkdir build && cd build
+
+cmake .. -DCMAKE_TOOLCHAIN_FILE=/home/mytsp01872/Videos/vsomeip2/DALI/platforms/aarch64-linux/aarch64-linux.toolchain.cmake  -DCMAKE_CXX_COMPILER=/usr/bin/aarch64-linux-gnu-g++-9 -DCMAKE_C_COMPILER=/usr/bin/aarch64-linux-gnu-gcc-9  -DBoost_INCLUDE_DIR=/usr/local/include -DBoost_LIBRARY_DIR=/usr/local/lib -DCMAKE_PREFIX_PATH=/usr/local/vsomeip
+
+
+we need to connect the board and linux pc using ethernet cable
+
+then lets make the board and pc adress as static
+
+
+board ip afdress==192.0.0.2     linux pc adress=192.0.0.1
+
+linux pc side--
+
+route add -nv 224.224.224.255 dev eno1
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+
+
+R-car side--
+
+
+
+Download the libstdc++.so.6.0.28 package 
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/root/sankar/vsomeip/build:/root/sankar/local11/local/lib:/root/sankar
+
+  cd /usr/lib/aarch64-linux-gnu/
+  ls -lrt
+  ls -lrt libstdc++.so.6*
+  rm -rf libstdc++.so.6
+  ln -s /root/sankar/libstdc++.so.6.0.28  libstdc++.so.6
+ifconfig eth0 192.0.0.2
+
+route add -nv 224.224.224.255 gw 192.0.0.2 dev eth0
